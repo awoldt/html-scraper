@@ -1,0 +1,18 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="alert-error">
+    <h1 class="text-danger">Error</h1>
+    @if (Model.ErrorMessage != null)
+    {
+        <p>@Model.ErrorMessage</p>
+    }
+</div>
+
+
+
+<div style="margin-top: 25px;">
+    <a href="/" title="Return to homepage">Return home</a>
+</div>

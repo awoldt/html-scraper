@@ -1,0 +1,220 @@
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark-reasonable.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<script>
+  hljs.highlightAll();
+</script>
+
+<div style="margin-top: 50px;">
+  <p class="mb0-ptag">
+    The JSON structure returned following the successful parsing of a valid URL will resemble this:</p>
+
+  <pre>
+        <code class="hljs language-json">{
+    "parsed_in_ms": {INT}, // time it took to parse site in milliseconds
+    "url": {STRING}, // the url parsed
+    "data": {ARRAY} // all data related to the tags
+}</code>
+    </pre>
+
+  <p class="mb0-ptag">The <i>data</i> property will contain all the information related to the specific tag on the HTML
+    page parsed. If a selected tag is absent in the HTML, it will be omitted from the JSON results.</p>
+
+  <pre>
+    <code class="hljs language-json">{
+    "tag": {STRING}, // the tag (p, h1, img, etc.)
+    "num_of_tags": {INT}, // the number of occurences of this specific tag
+    "results": {ARRAY} // the data on each specific tag
+}</code>
+</pre>
+
+  <p>Here is an example of a successful URL parse: (<a
+      href="https://awoldt.dev/articles/uploading-file-to-s3-with-nodejs">awoldt.dev</a>).<br>Only <i>&lt;p&gt;</i> and
+    <i>&lt;img&gt;</i> tags were selected for this parse.</p>
+  <pre>
+    <code  class="hljs language-json">{
+  "parsed_in_ms": 82,
+  "url": "https://awoldt.dev/articles/uploading-file-to-s3-with-nodejs",
+  "data": [
+    {
+      "tag": "p",
+      "num_of_tags": 27,
+      "results": [
+        {
+          "inner_text": "With a few lines of code, you can quickly start uploading all of your files into the S3 buckets",
+          "class": "text-secondary",
+          "id": null
+        },
+        {
+          "inner_text": "Amazon S3 is one of the most easy-to-use and powerful services AWS offers developers. You can store practically unlimited amounts of data across many buckets while making these files publicly accessible to people online. In this article, you will learn how to do just that.",
+          "class": null,
+          "id": null
+        },
+        {
+          "inner_text": "We will be uploading a basic HTML file and a PNG image. Before we begin, make sure you have the following:",
+          "class": null,
+          "id": null
+        },
+        {
+          "inner_text": "Initialize a basic nodejs application using:",
+          "class": "mb-0",
+          "id": null
+        },
+        {
+          "inner_text": "Now install the AWS package:",
+          "class": "mb-0",
+          "id": null
+        },
+        {
+          "inner_text": "For our project, we will have a JavaScript file (app.js) containing all the logic to interact with S3 and the HTML and PNG files sitting in the same project folder. It should resemble this:",
+          "class": null,
+          "id": null
+        },
+        {
+          "inner_text": "You can name the HTML and PNG file whatever you would like.",
+          "class": null,
+          "id": null
+        },
+        {
+          "inner_text": "Log into your AWS account and find the S3 service screen. You can locate the search bar at the top of the page. Once we are on the S3 page, click the Create Bucket button.",
+          "class": null,
+          "id": null
+        },
+        {
+          "inner_text": "Once we are on the Create Bucket page, you will have some things to do. First, select the region you want to host your bucket. AWS regions specify what location you would like to host whatever AWS service you are utilizing; it does not matter much what region you choose. Typically, people select the regions closest to them, but you can pick any. I will use US East (N. Virginia), better known as us-east-1.",
+          "class": null,
+          "id": null
+        },
+        {
+          "inner_text": "Now, name your bucket. This name must be globally unique, meaning it cannot have the same name as any other bucket in the region you selected.",
+          "class": null,
+          "id": null
+        },
+        {
+          "inner_text": "After naming your bucket, keep the rest of the default settings. Pay attention once you get to the Block Public Access settings for this bucket.",
+          "class": null,
+          "id": null
+        },
+        {
+          "inner_text": "We want to have this option unchecked. This will allow all files uploaded to this bucket to be accessible online so you can share links to your files with others.",
+          "class": null,
+          "id": null
+        },
+        {
+          "inner_text": "Keep the rest of the default settings and click the Create Bucket button at the bottom of the page.",
+          "class": null,
+          "id": null
+        },
+        {
+          "inner_text": "To communicate with AWS S3, you need an S3 client in your code that uses your specific AWS account\u0027s credentials to connect. You can find more about where to locate these credentials here. These credentials will consist of an access key and a secret access key specific to your account.",
+          "class": null,
+          "id": null
+        },
+        {
+          "inner_text": "Once you have both keys for your AWS account, we can start working on the code. Inside app.js lets initize an S3 client. As mentioned earlier in the article, ensure the &#64;aws-sdk/client-s3 package is installed.",
+          "class": null,
+          "id": null
+        },
+        {
+          "inner_text": "From the AWS S3 package, we are importing S3Client and PutObjectCommand. The client will be the primary way of connecting to our bucket, and the PutObjectCommand is used to send data to the bucket. We then initiate a new S3Client object, which takes in two parameters: the credentials object (containing our access keys) and the region the bucket is hosted (the region you choose to host your bucket). A list of all the region names can be found here. Use the shorthand name for the region for the parameter here. For example, US East (N. Virginia) would be us-east-1.",
+          "class": null,
+          "id": null
+        },
+        {
+          "inner_text": "Now, the fun part. We must read the files from our local directory and upload them to AWS. For this, we will utilize the native fs/promises Nodejs package. This is similar to the fs package, except this is asynchronous and will allow us to use async/await to upload the files. If you don\u0027t know what that means, don\u0027t worry that\u0027s not part of this tutorial.",
+          "class": null,
+          "id": null
+        },
+        {
+          "inner_text": "Let\u0027s start off by reading the html file. See the code below:",
+          "class": null,
+          "id": null
+        },
+        {
+          "inner_text": "This will read the file in its entirety with the correct encoding. The value returned to htmlFileData will be what is uploaded to S3. We now take the client we initiated earlier and plug in the file we just read like this:",
+          "class": null,
+          "id": null
+        },
+        {
+          "inner_text": "Go and check your bucket! You should see the file with the name of the key property you gave it above. It\u0027s that easy. Now, let\u0027s do the same with the image. Note the code is slightly different for uploading the image. We do not want to have the encoding parameter for the fs.readFile",
+          "class": null,
+          "id": null
+        },
+        {
+          "inner_text": "Navigate to the properties tab of your bucket. You will see what\u0027s known as the Amazon Resource Name, or ARN for short. Every AWS resource will have a unique ARN assigned to it. We need this string for the next step. Make sure to copy it. There is no reason that an arn has to be stored as a secret. If your AWS security policies and permissions are set up correctly, nobody can do anything with it.",
+          "class": null,
+          "id": null
+        },
+        {
+          "inner_text": "We need to change the bucket policy now. Don\u0027t worry too much about what any of this means; just know it is needed for the bucket to have public URLs for your files. Copy the following JSON code:",
+          "class": null,
+          "id": null
+        },
+        {
+          "inner_text": "Be sure to replace the {YOUR_BUCKETS_RESOURCE_ARN} with what you copied from the last step.",
+          "class": null,
+          "id": null
+        },
+        {
+          "inner_text": "Head over to the permissions tab of your bucket and hit the edit button near the bucket policy input. Once here, copy the JSON code from above and paste and hit save changes.",
+          "class": null,
+          "id": null
+        },
+        {
+          "inner_text": "Your bucket should now be public, and any file inside can be accessed by a public URL. Click on one of the uploaded files and and look for its object URL.",
+          "class": null,
+          "id": null
+        },
+        {
+          "inner_text": "Here\u0027s an example of what my uploaded file\u0027s object URL is - https://491292639630-us-east-1-awoldt.s3.amazonaws.com/cat.png",
+          "class": null,
+          "id": null
+        },
+        {
+          "inner_text": "\uD83C\uDF89 Congratulations, you uploaded two files to AWS S3 and made them public online! Try experimenting more and uploading different types of files, creating folders in your buckets to store these files in, or creating a script that uploads the entirety of your computer\u0027s hard drive! The possibilities are endless.",
+          "class": null,
+          "id": null
+        }
+      ]
+    },
+    {
+      "tag": "img",
+      "num_of_tags": 6,
+      "results": [
+        {
+          "src": "https://awoldt.dev/imgs/articles/create-bucket-button.png",
+          "class": "img-fluid article-img",
+          "id": null
+        },
+        {
+          "src": "https://awoldt.dev/imgs/articles/aws-bucket-region.png",
+          "class": "img-fluid article-img",
+          "id": null
+        },
+        {
+          "src": "https://awoldt.dev/imgs/articles/block-public-access-bucket.png",
+          "class": "img-fluid article-img",
+          "id": null
+        },
+        {
+          "src": "https://awoldt.dev/imgs/articles/aws-arn.png",
+          "class": "img-fluid article-img",
+          "id": null
+        },
+        {
+          "src": "https://awoldt.dev/imgs/articles/permissions-tab-s3-bucket.png",
+          "class": "img-fluid article-img",
+          "id": null
+        },
+        {
+          "src": "https://awoldt.dev/imgs/articles/s3-file-object-url.webp",
+          "class": "img-fluid article-img",
+          "id": null
+        }
+      ]
+    }
+  ]
+}</code>
+</pre>
+</div>
