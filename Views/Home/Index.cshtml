@@ -116,61 +116,64 @@
             hljs.highlightAll();
         </script>
 
-        <div style="margin-bottom: 25px;">
-            <h1 style="margin-bottom: 0px;">URL Parser</h1>
-            @if (numberOfSitesParsed != null)
-            {
-                <p style="margin-top: 0px; color: red">@numberOfSitesParsed sites have been parsed!</p>
-            }
-
-        </div>
-
-        <form method="post">
-
-            <div style="margin-bottom: 10px;">
-                <input type="url" placeholder="Enter a valid url" name="url_value" id="url_input" required>
-                <button type="submit">Scrape</button>
+        <div id="top_info_div">
+            <div style="margin-bottom: 40px;">
+                <h1 style="margin-bottom: 0px;">URL Parser</h1>
+                <p>Extract HTML tag information from any website and download JSON data showcasing attributes such as href,
+                    inner text, class, src, and more</p>
+                @if (numberOfSitesParsed != null)
+                {
+                    <p style="margin-top: 0px; color: red">@numberOfSitesParsed sites have been parsed!</p>
+                }
             </div>
 
-            <button onclick="UncheckAllCheckboxs()" type="button">Uncheck all</button>
+            <form method="post">
+                <div style="margin-bottom: 10px;">
+                    <input type="url" placeholder="Enter a valid url" name="url_value" id="url_input" required>
+                    <button type="submit">Scrape</button>
+                </div>
 
-            <input type="checkbox" id="p_tag_checkbox" name="tags_to_parse" value="p" checked>
-            <label for="p_tag_checkbox">&lt;p&gt;</label>
+                <button onclick="UncheckAllCheckboxs()" type="button">Uncheck all</button>
 
-            <input type="checkbox" id="a_tag_checkbox" name="tags_to_parse" value="a" checked>
-            <label for="a_tag_checkbox">&lt;a&gt;</label>
+                <input type="checkbox" id="p_tag_checkbox" name="tags_to_parse" value="p" checked>
+                <label for="p_tag_checkbox">&lt;p&gt;</label>
 
-            <input type="checkbox" id="img_tag_checkbox" name="tags_to_parse" value="img" checked>
-            <label for="img_tag_checkbox">&lt;img&gt;</label>
+                <input type="checkbox" id="a_tag_checkbox" name="tags_to_parse" value="a" checked>
+                <label for="a_tag_checkbox">&lt;a&gt;</label>
 
-            <input type="checkbox" id="script_tag_checkbox" name="tags_to_parse" value="script" checked>
-            <label for="script_tag_checkbox">&lt;script&gt;</label>
+                <input type="checkbox" id="img_tag_checkbox" name="tags_to_parse" value="img" checked>
+                <label for="img_tag_checkbox">&lt;img&gt;</label>
 
-            <input type="checkbox" id="form_tag_checkbox" name="tags_to_parse" value="form" checked>
-            <label for="form_tag_checkbox">&lt;form&gt;</label>
+                <input type="checkbox" id="script_tag_checkbox" name="tags_to_parse" value="script" checked>
+                <label for="script_tag_checkbox">&lt;script&gt;</label>
 
-            <input type="checkbox" id="h1_tag_checkbox" name="tags_to_parse" value="h1" checked>
-            <label for="h1_tag_checkbox">&lt;h1&gt;</label>
+                <input type="checkbox" id="form_tag_checkbox" name="tags_to_parse" value="form" checked>
+                <label for="form_tag_checkbox">&lt;form&gt;</label>
 
-            <input type="checkbox" id="h2_tag_checkbox" name="tags_to_parse" value="h2" checked>
-            <label for="h2_tag_checkbox">&lt;h2&gt;</label>
+                <input type="checkbox" id="h1_tag_checkbox" name="tags_to_parse" value="h1" checked>
+                <label for="h1_tag_checkbox">&lt;h1&gt;</label>
 
-            <input type="checkbox" id="h3_tag_checkbox" name="tags_to_parse" value="h3" checked>
-            <label for="h3_tag_checkbox">&lt;h3&gt;</label>
+                <input type="checkbox" id="h2_tag_checkbox" name="tags_to_parse" value="h2" checked>
+                <label for="h2_tag_checkbox">&lt;h2&gt;</label>
 
-            <input type="checkbox" id="h4_tag_checkbox" name="tags_to_parse" value="h4" checked>
-            <label for="h4_tag_checkbox">&lt;h4&gt;</label>
+                <input type="checkbox" id="h3_tag_checkbox" name="tags_to_parse" value="h3" checked>
+                <label for="h3_tag_checkbox">&lt;h3&gt;</label>
 
-            <input type="checkbox" id="h5_tag_checkbox" name="tags_to_parse" value="h5" checked>
-            <label for="h5_tag_checkbox">&lt;h5&gt;</label>
+                <input type="checkbox" id="h4_tag_checkbox" name="tags_to_parse" value="h4" checked>
+                <label for="h4_tag_checkbox">&lt;h4&gt;</label>
 
-            <input type="checkbox" id="h6_tag_checkbox" name="tags_to_parse" value="h6" checked>
-            <label for="h6_tag_checkbox">&lt;h6&gt;</label>
+                <input type="checkbox" id="h5_tag_checkbox" name="tags_to_parse" value="h5" checked>
+                <label for="h5_tag_checkbox">&lt;h5&gt;</label>
 
-            <input type="checkbox" id="span_tag_checkbox" name="tags_to_parse" value="span" checked>
-            <label for="span_tag_checkbox">&lt;span&gt;</label>
+                <input type="checkbox" id="h6_tag_checkbox" name="tags_to_parse" value="h6" checked>
+                <label for="h6_tag_checkbox">&lt;h6&gt;</label>
 
-        </form>
+                <input type="checkbox" id="span_tag_checkbox" name="tags_to_parse" value="span" checked>
+                <label for="span_tag_checkbox">&lt;span&gt;</label>
+            </form>
+        </div>
+
+
 
         <hr>
 

@@ -128,7 +128,7 @@ public class Utils
                         {
                             ClassName = x.GetAttributeValue("class", null),
                             IdName = x.GetAttributeValue("id", null),
-                            Src = validUrl.AbsoluteUri,
+                            Src = x.GetAttributeValue("src", null) == null ? null : validUrl.AbsoluteUri,
                             InlineScript = x.GetAttributeValue("src", null) == null ? true : false,
                             InlineScriptText = x.GetAttributeValue("src", null) == null ? x.InnerText.Replace("\n", "").Replace("\r", "").Replace("\t", "") : null
                         });
@@ -140,7 +140,7 @@ public class Utils
                         {
                             ClassName = x.GetAttributeValue("class", null),
                             IdName = x.GetAttributeValue("id", null),
-                            Src = $"https://{host}{x.GetAttributeValue("src", null)}",
+                            Src = x.GetAttributeValue("src", null) == null ? null : $"https://{host}{x.GetAttributeValue("src", null)}",
                             InlineScript = x.GetAttributeValue("src", null) == null ? true : false,
                             InlineScriptText = x.GetAttributeValue("src", null) == null ? x.InnerText.Replace("\n", "").Replace("\r", "").Replace("\t", "") : null
                         });

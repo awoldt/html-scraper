@@ -36,7 +36,8 @@
   padding: 10px;
   border: 1px solid green;
   border-radius: 10px;
-  font-weight: 800;
+  font-weight: 700;
+  border: 3px solid green;
 }
 
 .alert-error {
@@ -61,4 +62,9 @@ pre {
 
 html {
   font-family: Arial, Helvetica, sans-serif;
+}
+
+#top_info_div {
+  text-align: center;
+  margin-bottom: 50px;
 }

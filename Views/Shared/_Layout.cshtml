@@ -1,11 +1,20 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - webscraper</title>
+    <title>URL Parser - Get HTML Page Tag Information</title>
+    <meta name="description"
+        content="Parse any valid URL and get back JSON data containing information on tags such as p, span, img, a, script, and more">
+    <meta property="og:title" content="URL Parser - Get HTML Page Tag Information" />
+    <meta property="og:image" content="/imgs/json_return_data.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
+
 <body>
     <div class="container">
         <main role="main" class="pb-3">
@@ -15,4 +24,5 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>

@@ -30,149 +30,172 @@
 </pre>
 
   <p>Here is an example of a successful URL parse: (<a
-      href="https://awoldt.dev/articles/uploading-file-to-s3-with-nodejs">awoldt.dev</a>).<br>Only <i>&lt;p&gt;</i> and
+      href="https://ogp.me/">ogp.me</a>).<br>Only <i>&lt;p&gt;</i> and
     <i>&lt;img&gt;</i> tags were selected for this parse.</p>
   <pre>
     <code  class="hljs language-json">{
-  "parsed_in_ms": 82,
-  "url": "https://awoldt.dev/articles/uploading-file-to-s3-with-nodejs",
+  "parsed_in_ms": 29,
+  "url": "https://ogp.me/",
   "data": [
     {
       "tag": "p",
-      "num_of_tags": 27,
+      "num_of_tags": 42,
       "results": [
         {
-          "inner_text": "With a few lines of code, you can quickly start uploading all of your files into the S3 buckets",
-          "class": "text-secondary",
-          "id": null
-        },
-        {
-          "inner_text": "Amazon S3 is one of the most easy-to-use and powerful services AWS offers developers. You can store practically unlimited amounts of data across many buckets while making these files publicly accessible to people online. In this article, you will learn how to do just that.",
+          "inner_text": "The Open Graph protocol enables any web page to become arich object in a social graph. For instance, this is used on Facebook to allowany web page to have the same functionality as any other object on Facebook.",
           "class": null,
           "id": null
         },
         {
-          "inner_text": "We will be uploading a basic HTML file and a PNG image. Before we begin, make sure you have the following:",
+          "inner_text": "While many different technologies and schemas exist and could be combinedtogether, there isn\u0027t a single technology which provides enough information torichly represent any web page within the social graph. The Open Graph protocolbuilds on these existing technologies and gives developers one thing toimplement. Developer simplicity is a key goal of the Open Graph protocol whichhas informed many of the technical design decisions.",
           "class": null,
           "id": null
         },
         {
-          "inner_text": "Initialize a basic nodejs application using:",
-          "class": "mb-0",
-          "id": null
-        },
-        {
-          "inner_text": "Now install the AWS package:",
-          "class": "mb-0",
-          "id": null
-        },
-        {
-          "inner_text": "For our project, we will have a JavaScript file (app.js) containing all the logic to interact with S3 and the HTML and PNG files sitting in the same project folder. It should resemble this:",
+          "inner_text": "To turn your web pages into graph objects, you need to add basic metadata toyour page. We\u0027ve based the initial version of the protocol onRDFa which means that you\u0027ll placeadditional \u0026lt;meta\u0026gt; tags in the \u0026lt;head\u0026gt; of your web page. The four requiredproperties for every page are:",
           "class": null,
           "id": null
         },
         {
-          "inner_text": "You can name the HTML and PNG file whatever you would like.",
+          "inner_text": "As an example, the following is the Open Graph protocol markup for The Rock onIMDB:",
           "class": null,
           "id": null
         },
         {
-          "inner_text": "Log into your AWS account and find the S3 service screen. You can locate the search bar at the top of the page. Once we are on the S3 page, click the Create Bucket button.",
+          "inner_text": "The following properties are optional for any object and are generallyrecommended:",
           "class": null,
           "id": null
         },
         {
-          "inner_text": "Once we are on the Create Bucket page, you will have some things to do. First, select the region you want to host your bucket. AWS regions specify what location you would like to host whatever AWS service you are utilizing; it does not matter much what region you choose. Typically, people select the regions closest to them, but you can pick any. I will use US East (N. Virginia), better known as us-east-1.",
+          "inner_text": "For example (line-break solely for display purposes):",
           "class": null,
           "id": null
         },
         {
-          "inner_text": "Now, name your bucket. This name must be globally unique, meaning it cannot have the same name as any other bucket in the region you selected.",
+          "inner_text": "The RDF schema (in Turtle) can be found at ogp.me/ns.",
           "class": null,
           "id": null
         },
         {
-          "inner_text": "After naming your bucket, keep the rest of the default settings. Pay attention once you get to the Block Public Access settings for this bucket.",
+          "inner_text": "Some properties can have extra metadata attached to them.These are specified in the same way as other metadata with property andcontent, but the property will have extra :.",
           "class": null,
           "id": null
         },
         {
-          "inner_text": "We want to have this option unchecked. This will allow all files uploaded to this bucket to be accessible online so you can share links to your files with others.",
+          "inner_text": "The og:image property has some optional structured properties:",
+          "class": null,
+          "id": null
+        },
+        { "inner_text": "A full image example:", "class": null, "id": null },
+        {
+          "inner_text": "The og:video tag has the identical tags as og:image. Here is an example:",
           "class": null,
           "id": null
         },
         {
-          "inner_text": "Keep the rest of the default settings and click the Create Bucket button at the bottom of the page.",
+          "inner_text": "The og:audio tag only has the first 3 properties available(since size doesn\u0027t make sense for sound):",
           "class": null,
           "id": null
         },
         {
-          "inner_text": "To communicate with AWS S3, you need an S3 client in your code that uses your specific AWS account\u0027s credentials to connect. You can find more about where to locate these credentials here. These credentials will consist of an access key and a secret access key specific to your account.",
+          "inner_text": "If a tag can have multiple values, just put multiple versions of the same\u0026lt;meta\u0026gt; tag on your page. The first tag (from top to bottom) is givenpreference during conflicts.",
           "class": null,
           "id": null
         },
         {
-          "inner_text": "Once you have both keys for your AWS account, we can start working on the code. Inside app.js lets initize an S3 client. As mentioned earlier in the article, ensure the &#64;aws-sdk/client-s3 package is installed.",
+          "inner_text": "Put structured properties after you declare their root tag. Wheneveranother root element is parsed, that structured propertyis considered to be done and another one is started.",
+          "class": null,
+          "id": null
+        },
+        { "inner_text": "For example:", "class": null, "id": null },
+        {
+          "inner_text": "means there are 3 images on this page, the first image is 300x300, the middleone has unspecified dimensions, and the last one is 1000px tall.",
           "class": null,
           "id": null
         },
         {
-          "inner_text": "From the AWS S3 package, we are importing S3Client and PutObjectCommand. The client will be the primary way of connecting to our bucket, and the PutObjectCommand is used to send data to the bucket. We then initiate a new S3Client object, which takes in two parameters: the credentials object (containing our access keys) and the region the bucket is hosted (the region you choose to host your bucket). A list of all the region names can be found here. Use the shorthand name for the region for the parameter here. For example, US East (N. Virginia) would be us-east-1.",
+          "inner_text": "In order for your object to be represented within the graph, you need tospecify its type. This is done using the og:type property:",
           "class": null,
           "id": null
         },
         {
-          "inner_text": "Now, the fun part. We must read the files from our local directory and upload them to AWS. For this, we will utilize the native fs/promises Nodejs package. This is similar to the fs package, except this is asynchronous and will allow us to use async/await to upload the files. If you don\u0027t know what that means, don\u0027t worry that\u0027s not part of this tutorial.",
+          "inner_text": "When the community agrees on the schema for a type, it is added to the listof global types. All other objects in the type system areCURIEs of the form",
           "class": null,
           "id": null
         },
         {
-          "inner_text": "Let\u0027s start off by reading the html file. See the code below:",
+          "inner_text": "The global types are grouped into verticals. Each vertical has itsown namespace. The og:type values for a namespace are always prefixed withthe namespace and then a period.This is to reduce confusion with user-defined namespaced types which alwayshave colons in them.",
+          "class": null,
+          "id": null
+        },
+        { "inner_text": "og:type values:", "class": null, "id": null },
+        { "inner_text": "music.song", "class": null, "id": null },
+        { "inner_text": "music.album", "class": null, "id": null },
+        { "inner_text": "music.playlist", "class": null, "id": null },
+        { "inner_text": "music.radio_station", "class": null, "id": null },
+        { "inner_text": "og:type values:", "class": null, "id": null },
+        { "inner_text": "video.movie", "class": null, "id": null },
+        { "inner_text": "video.episode", "class": null, "id": null },
+        { "inner_text": "video.tv_show", "class": null, "id": null },
+        {
+          "inner_text": "A multi-episode TV show.The metadata is identical to video.movie.",
+          "class": null,
+          "id": null
+        },
+        { "inner_text": "video.other", "class": null, "id": null },
+        {
+          "inner_text": "A video that doesn\u0027t belong in any other category.The metadata is identical to video.movie.",
           "class": null,
           "id": null
         },
         {
-          "inner_text": "This will read the file in its entirety with the correct encoding. The value returned to htmlFileData will be what is uploaded to S3. We now take the client we initiated earlier and plug in the file we just read like this:",
+          "inner_text": "These are globally defined objects that just don\u0027t fit into a vertical butyet are broadly used and agreed upon.",
+          "class": null,
+          "id": null
+        },
+        { "inner_text": "og:type values:", "class": null, "id": null },
+        {
+          "inner_text": "article - Namespace URI: https://ogp.me/ns/article#",
           "class": null,
           "id": null
         },
         {
-          "inner_text": "Go and check your bucket! You should see the file with the name of the key property you gave it above. It\u0027s that easy. Now, let\u0027s do the same with the image. Note the code is slightly different for uploading the image. We do not want to have the encoding parameter for the fs.readFile",
+          "inner_text": "book - Namespace URI: https://ogp.me/ns/book#",
           "class": null,
           "id": null
         },
         {
-          "inner_text": "Navigate to the properties tab of your bucket. You will see what\u0027s known as the Amazon Resource Name, or ARN for short. Every AWS resource will have a unique ARN assigned to it. We need this string for the next step. Make sure to copy it. There is no reason that an arn has to be stored as a secret. If your AWS security policies and permissions are set up correctly, nobody can do anything with it.",
+          "inner_text": "profile - Namespace URI: https://ogp.me/ns/profile#",
           "class": null,
           "id": null
         },
         {
-          "inner_text": "We need to change the bucket policy now. Don\u0027t worry too much about what any of this means; just know it is needed for the bucket to have public URLs for your files. Copy the following JSON code:",
+          "inner_text": "website - Namespace URI: https://ogp.me/ns/website#",
           "class": null,
           "id": null
         },
         {
-          "inner_text": "Be sure to replace the {YOUR_BUCKETS_RESOURCE_ARN} with what you copied from the last step.",
+          "inner_text": "No additional properties other than the basic ones.Any non-marked up webpage should be treated as og:type website.",
           "class": null,
           "id": null
         },
         {
-          "inner_text": "Head over to the permissions tab of your bucket and hit the edit button near the bucket policy input. Once here, copy the JSON code from above and paste and hit save changes.",
+          "inner_text": "The following types are used when defining attributes in Open Graph protocol.",
           "class": null,
           "id": null
         },
         {
-          "inner_text": "Your bucket should now be public, and any file inside can be accessed by a public URL. Click on one of the uploaded files and and look for its object URL.",
+          "inner_text": "You can discuss the Open Graph Protocol inthe Facebook group or on the developer mailing list.It is currently being consumed by Facebook (see their documentation), Google (see their documentation), andmixi.It is being published by IMDb, Microsoft, NHL, Posterous, Rotten Tomatoes,TIME, Yelp, and many many others.",
           "class": null,
           "id": null
         },
         {
-          "inner_text": "Here\u0027s an example of what my uploaded file\u0027s object URL is - https://491292639630-us-east-1-awoldt.s3.amazonaws.com/cat.png",
+          "inner_text": "The open source community has developed a number of parsers and publishingtools. Let the Facebook group know if you\u0027ve built something awesome too!",
           "class": null,
           "id": null
         },
         {
-          "inner_text": "\uD83C\uDF89 Congratulations, you uploaded two files to AWS S3 and made them public online! Try experimenting more and uploading different types of files, creating folders in your buckets to store these files in, or creating a script that uploads the entirety of your computer\u0027s hard drive! The possibilities are endless.",
+          "inner_text": "The Open Graph protocol was originally created at Facebook and is inspired by Dublin Core, link-rel canonical, Microformats, and RDFa. The specification described on this page is available under the Open Web Foundation Agreement, Version 0.9. This website is Open Source.",
           "class": null,
           "id": null
         }
@@ -180,38 +203,9 @@
     },
     {
       "tag": "img",
-      "num_of_tags": 6,
+      "num_of_tags": 1,
       "results": [
-        {
-          "src": "https://awoldt.dev/imgs/articles/create-bucket-button.png",
-          "class": "img-fluid article-img",
-          "id": null
-        },
-        {
-          "src": "https://awoldt.dev/imgs/articles/aws-bucket-region.png",
-          "class": "img-fluid article-img",
-          "id": null
-        },
-        {
-          "src": "https://awoldt.dev/imgs/articles/block-public-access-bucket.png",
-          "class": "img-fluid article-img",
-          "id": null
-        },
-        {
-          "src": "https://awoldt.dev/imgs/articles/aws-arn.png",
-          "class": "img-fluid article-img",
-          "id": null
-        },
-        {
-          "src": "https://awoldt.dev/imgs/articles/permissions-tab-s3-bucket.png",
-          "class": "img-fluid article-img",
-          "id": null
-        },
-        {
-          "src": "https://awoldt.dev/imgs/articles/s3-file-object-url.webp",
-          "class": "img-fluid article-img",
-          "id": null
-        }
+        { "src": "https://ogp.me/logo.png", "class": null, "id": null }
       ]
     }
   ]
