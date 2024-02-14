@@ -18,7 +18,7 @@
 }</code>
     </pre>
 
-  <p class="mb0-ptag">The <i>data</i> property will contain all the information related to the specific tag on the HTML
+  <p class="mb0-ptag">The <i>data</i> property will contain all the information related to the specific tags on the HTML
     page parsed. If a selected tag is absent in the HTML, it will be omitted from the JSON results.</p>
 
   <pre>
@@ -34,7 +34,7 @@
     <i>&lt;img&gt;</i> tags were selected for this parse.</p>
   <pre>
     <code  class="hljs language-json">{
-  "parsed_in_ms": 29,
+  "parsed_in_ms": 33,
   "url": "https://ogp.me/",
   "data": [
     {
@@ -205,7 +205,12 @@
       "tag": "img",
       "num_of_tags": 1,
       "results": [
-        { "src": "https://ogp.me/logo.png", "class": null, "id": null }
+        {
+          "src": "https://ogp.me/logo.png",
+          "alt": "Open Graph protocol logo",
+          "class": null,
+          "id": null
+        }
       ]
     }
   ]

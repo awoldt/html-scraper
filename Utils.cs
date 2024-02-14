@@ -1,3 +1,4 @@
+
 using System.Text.Json.Serialization;
 using HtmlAgilityPack;
 using System.Text.RegularExpressions;
@@ -52,6 +53,8 @@ namespace Utils
     {
         [JsonPropertyName("src")]
         public string? Src { get; set; }
+        [JsonPropertyName("alt")]
+        public string? Alt { get; set; }
     }
 
     public class ScriptTag : BaseTag
@@ -70,7 +73,24 @@ namespace Utils
         public string? Method { get; set; }
         [JsonPropertyName("action")]
         public string? Action { get; set; }
+    }
 
+    public class MetaTag : BaseTag
+    {
+        [JsonPropertyName("name")]
+        public string? Name { get; set; }
+        [JsonPropertyName("content")]
+        public string? Content { get; set; }
+        [JsonPropertyName("property")]
+        public string? Property { get; set; }
+    }
+
+    public class InputTag : BaseTag
+    {
+        [JsonPropertyName("type")]
+        public string? Type { get; set; }
+        [JsonPropertyName("name")]
+        public string? Name { get; set; }
     }
 
     public class Functions
@@ -93,7 +113,8 @@ namespace Utils
                         {
                             ClassName = x.GetAttributeValue("class", null),
                             IdName = x.GetAttributeValue("id", null),
-                            Src = GetSource(x.GetAttributeValue("src", null), host)
+                            Src = GetSource(x.GetAttributeValue("src", null), host),
+                            Alt = x.GetAttributeValue("alt", null),
                         });
                         break;
 
@@ -122,7 +143,24 @@ namespace Utils
                         tagDetails.Add(new FormTag
                         {
                             Method = x.GetAttributeValue("method", null),
-                            Action = x.GetAttributeValue("action", null)
+                            Action = GetSource(x.GetAttributeValue("action", null), host)
+                        });
+                        break;
+
+                    case "meta":
+                        tagDetails.Add(new MetaTag
+                        {
+                            Name = x.GetAttributeValue("name", null),
+                            Property = x.GetAttributeValue("property", null),
+                            Content = x.GetAttributeValue("content", null),
+                        });
+                        break;
+
+                    case "input":
+                        tagDetails.Add(new InputTag
+                        {
+                            Type = x.GetAttributeValue("type", null),
+                            Name = x.GetAttributeValue("name", null),
                         });
                         break;
 
