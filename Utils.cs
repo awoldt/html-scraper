@@ -89,28 +89,12 @@ namespace Utils
                 switch (tagName)
                 {
                     case "img":
-
-                        // img src is from another site
-                        if (x.GetAttributeValue("src", null) != null && Uri.TryCreate(x.GetAttributeValue("src", null), UriKind.Absolute, out validUrl))
+                        tagDetails.Add(new ImgTag
                         {
-                            tagDetails.Add(new ImgTag
-                            {
-                                ClassName = x.GetAttributeValue("class", null),
-                                IdName = x.GetAttributeValue("id", null),
-                                Src = validUrl.AbsoluteUri
-                            });
-                        }
-                        // img src is from current site
-                        else
-                        {
-                            tagDetails.Add(new ImgTag
-                            {
-                                ClassName = x.GetAttributeValue("class", null),
-                                IdName = x.GetAttributeValue("id", null),
-                                Src = $"https://{host}{x.GetAttributeValue("src", null)}"
-                            });
-                        }
-
+                            ClassName = x.GetAttributeValue("class", null),
+                            IdName = x.GetAttributeValue("id", null),
+                            Src = GetSource(x.GetAttributeValue("src", null), host)
+                        });
                         break;
 
                     case "a":
@@ -118,35 +102,19 @@ namespace Utils
                         {
                             ClassName = x.GetAttributeValue("class", null),
                             IdName = x.GetAttributeValue("id", null),
-                            Href = x.GetAttributeValue("href", null),
+                            Href = GetSource(x.GetAttributeValue("href", null), host)
                         });
                         break;
 
                     case "script":
-                        // script src is from another site
-                        if (x.GetAttributeValue("src", null) != null && Uri.TryCreate(x.GetAttributeValue("src", null), UriKind.Absolute, out validUrl))
+                        tagDetails.Add(new ScriptTag
                         {
-                            tagDetails.Add(new ScriptTag
-                            {
-                                ClassName = x.GetAttributeValue("class", null),
-                                IdName = x.GetAttributeValue("id", null),
-                                Src = x.GetAttributeValue("src", null) == null ? null : validUrl.AbsoluteUri,
-                                InlineScript = x.GetAttributeValue("src", null) == null ? true : false,
-                                InlineScriptText = x.GetAttributeValue("src", null) == null ? x.InnerText.Replace("\n", "").Replace("\r", "").Replace("\t", "") : null
-                            });
-                        }
-                        // script src is from current site
-                        else
-                        {
-                            tagDetails.Add(new ScriptTag
-                            {
-                                ClassName = x.GetAttributeValue("class", null),
-                                IdName = x.GetAttributeValue("id", null),
-                                Src = x.GetAttributeValue("src", null) == null ? null : $"https://{host}{x.GetAttributeValue("src", null)}",
-                                InlineScript = x.GetAttributeValue("src", null) == null ? true : false,
-                                InlineScriptText = x.GetAttributeValue("src", null) == null ? x.InnerText.Replace("\n", "").Replace("\r", "").Replace("\t", "") : null
-                            });
-                        }
+                            ClassName = x.GetAttributeValue("class", null),
+                            IdName = x.GetAttributeValue("id", null),
+                            Src = GetSource(x.GetAttributeValue("src", null), host),
+                            InlineScript = x.GetAttributeValue("src", null) == null ? true : false,
+                            InlineScriptText = x.GetAttributeValue("src", null) == null ? x.InnerText.Replace("\n", "").Replace("\r", "").Replace("\t", "") : null
+                        });
 
                         break;
 
@@ -196,6 +164,29 @@ namespace Utils
                 return splitHost[splitHost.Length - 2] + "." + splitHost[splitHost.Length - 1];
             }
             return host;
+        }
+
+        private static string? GetSource(string? path, string host)
+        {
+            /* 
+                Gets the full path url for any url type attribute
+                (href, src)
+
+                ex: if href of a tag was "/about" and the site was x.com,
+                the string would return "https://x.com/about"
+            
+             */
+            if (path == null) return null;
+
+            Uri? url;
+            Uri.TryCreate(path, UriKind.Absolute, out url);
+            // RELATIVE PATH, APPEND SITES HOST
+            if (url == null)
+            {
+                return $"https://{host}{path}";
+            }
+
+            return url.AbsoluteUri;
         }
     }
 }
