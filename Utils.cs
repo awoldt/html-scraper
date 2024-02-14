@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 using HtmlAgilityPack;
 using System.Text.RegularExpressions;
 
-public class Utils
+namespace Utils
 {
     public class TagInfo
     {
@@ -73,109 +73,130 @@ public class Utils
 
     }
 
-    public static TagInfo GenerateTagInfo(HtmlNodeCollection tags, string tagName, string host)
+    public class Functions
     {
-        /* 
-            generates data on each tag returned from html page
-            each tag will have tag name, num of results, and results
-         */
-
-        List<BaseTag> tagDetails = new List<BaseTag>();
-        foreach (var x in tags)
+        public static TagInfo GenerateTagInfo(HtmlNodeCollection tags, string tagName, string host)
         {
-            Uri? validUrl;
-            switch (tagName)
+            /* 
+                generates data on each tag returned from html page
+                each tag will have tag name, num of results, and results
+             */
+
+            List<BaseTag> tagDetails = new List<BaseTag>();
+            foreach (var x in tags)
             {
-                case "img":
+                Uri? validUrl;
+                switch (tagName)
+                {
+                    case "img":
 
-                    // img src is from another site
-                    if (x.GetAttributeValue("src", null) != null && Uri.TryCreate(x.GetAttributeValue("src", null), UriKind.Absolute, out validUrl))
-                    {
-                        tagDetails.Add(new ImgTag
+                        // img src is from another site
+                        if (x.GetAttributeValue("src", null) != null && Uri.TryCreate(x.GetAttributeValue("src", null), UriKind.Absolute, out validUrl))
+                        {
+                            tagDetails.Add(new ImgTag
+                            {
+                                ClassName = x.GetAttributeValue("class", null),
+                                IdName = x.GetAttributeValue("id", null),
+                                Src = validUrl.AbsoluteUri
+                            });
+                        }
+                        // img src is from current site
+                        else
+                        {
+                            tagDetails.Add(new ImgTag
+                            {
+                                ClassName = x.GetAttributeValue("class", null),
+                                IdName = x.GetAttributeValue("id", null),
+                                Src = $"https://{host}{x.GetAttributeValue("src", null)}"
+                            });
+                        }
+
+                        break;
+
+                    case "a":
+                        tagDetails.Add(new ATag
                         {
                             ClassName = x.GetAttributeValue("class", null),
                             IdName = x.GetAttributeValue("id", null),
-                            Src = validUrl.AbsoluteUri
+                            Href = x.GetAttributeValue("href", null),
                         });
-                    }
-                    // img src is from current site
-                    else
-                    {
-                        tagDetails.Add(new ImgTag
+                        break;
+
+                    case "script":
+                        // script src is from another site
+                        if (x.GetAttributeValue("src", null) != null && Uri.TryCreate(x.GetAttributeValue("src", null), UriKind.Absolute, out validUrl))
                         {
-                            ClassName = x.GetAttributeValue("class", null),
-                            IdName = x.GetAttributeValue("id", null),
-                            Src = $"https://{host}{x.GetAttributeValue("src", null)}"
-                        });
-                    }
-
-                    break;
-
-                case "a":
-                    tagDetails.Add(new ATag
-                    {
-                        ClassName = x.GetAttributeValue("class", null),
-                        IdName = x.GetAttributeValue("id", null),
-                        Href = x.GetAttributeValue("href", null),
-                    });
-                    break;
-
-                case "script":
-                    // script src is from another site
-                    if (x.GetAttributeValue("src", null) != null && Uri.TryCreate(x.GetAttributeValue("src", null), UriKind.Absolute, out validUrl))
-                    {
-                        tagDetails.Add(new ScriptTag
+                            tagDetails.Add(new ScriptTag
+                            {
+                                ClassName = x.GetAttributeValue("class", null),
+                                IdName = x.GetAttributeValue("id", null),
+                                Src = x.GetAttributeValue("src", null) == null ? null : validUrl.AbsoluteUri,
+                                InlineScript = x.GetAttributeValue("src", null) == null ? true : false,
+                                InlineScriptText = x.GetAttributeValue("src", null) == null ? x.InnerText.Replace("\n", "").Replace("\r", "").Replace("\t", "") : null
+                            });
+                        }
+                        // script src is from current site
+                        else
                         {
-                            ClassName = x.GetAttributeValue("class", null),
-                            IdName = x.GetAttributeValue("id", null),
-                            Src = x.GetAttributeValue("src", null) == null ? null : validUrl.AbsoluteUri,
-                            InlineScript = x.GetAttributeValue("src", null) == null ? true : false,
-                            InlineScriptText = x.GetAttributeValue("src", null) == null ? x.InnerText.Replace("\n", "").Replace("\r", "").Replace("\t", "") : null
-                        });
-                    }
-                    // script src is from current site
-                    else
-                    {
-                        tagDetails.Add(new ScriptTag
+                            tagDetails.Add(new ScriptTag
+                            {
+                                ClassName = x.GetAttributeValue("class", null),
+                                IdName = x.GetAttributeValue("id", null),
+                                Src = x.GetAttributeValue("src", null) == null ? null : $"https://{host}{x.GetAttributeValue("src", null)}",
+                                InlineScript = x.GetAttributeValue("src", null) == null ? true : false,
+                                InlineScriptText = x.GetAttributeValue("src", null) == null ? x.InnerText.Replace("\n", "").Replace("\r", "").Replace("\t", "") : null
+                            });
+                        }
+
+                        break;
+
+                    case "form":
+                        tagDetails.Add(new FormTag
                         {
-                            ClassName = x.GetAttributeValue("class", null),
-                            IdName = x.GetAttributeValue("id", null),
-                            Src = x.GetAttributeValue("src", null) == null ? null : $"https://{host}{x.GetAttributeValue("src", null)}",
-                            InlineScript = x.GetAttributeValue("src", null) == null ? true : false,
-                            InlineScriptText = x.GetAttributeValue("src", null) == null ? x.InnerText.Replace("\n", "").Replace("\r", "").Replace("\t", "") : null
+                            Method = x.GetAttributeValue("method", null),
+                            Action = x.GetAttributeValue("action", null)
                         });
-                    }
+                        break;
 
-                    break;
-
-                case "form":
-                    tagDetails.Add(new FormTag
-                    {
-                        Method = x.GetAttributeValue("method", null),
-                        Action = x.GetAttributeValue("action", null)
-                    });
-                    break;
-
-                // other text based tags such as p, h, span, etc.....
-                default:
-                    if (Regex.Replace(x.InnerText.Replace("\n", "").Replace("\r", "").Replace("\t", "").Trim(), "\\s+", " ") != "")
-                    {
-                        tagDetails.Add(new TextTag
+                    // other text based tags such as p, h, span, etc.....
+                    default:
+                        if (Regex.Replace(x.InnerText.Replace("\n", "").Replace("\r", "").Replace("\t", "").Trim(), "\\s+", " ") != "")
                         {
-                            ClassName = x.GetAttributeValue("class", null),
-                            IdName = x.GetAttributeValue("id", null),
-                            InnerText = Regex.Replace(x.InnerText.Replace("\n", "").Replace("\r", "").Replace("\t", "").Trim(), "\\s+", " ")
-                        });
-                    }
-                    break;
+                            tagDetails.Add(new TextTag
+                            {
+                                ClassName = x.GetAttributeValue("class", null),
+                                IdName = x.GetAttributeValue("id", null),
+                                InnerText = Regex.Replace(x.InnerText.Replace("\n", "").Replace("\r", "").Replace("\t", "").Trim(), "\\s+", " ")
+                            });
+                        }
+                        break;
+                }
             }
+
+            return new TagInfo
+            {
+                Tag = tagName,
+                Number = tags.Count,
+                Values = tagDetails.ToArray()
+            };
         }
 
-        return new TagInfo
+        public static string RemoveSubdomains(Uri url)
         {
-            Tag = tagName,
-            Number = tags.Count,
-            Values = tagDetails.ToArray()
-        };
+            /* 
+                returns only the website host of a url (no subdomains)
+                ex: account.website.com => website.com
+
+             */
+
+            var host = url.Host;
+            var splitHost = host.Split(".");
+            if (splitHost.Length > 2)
+            {
+                return splitHost[splitHost.Length - 2] + "." + splitHost[splitHost.Length - 1];
+            }
+            return host;
+        }
     }
 }
+

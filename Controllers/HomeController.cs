@@ -6,9 +6,8 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using webscraper.Models;
-using static Utils;
+using Utils;
 
 namespace webscraper.Controllers;
 
@@ -19,25 +18,24 @@ public class HomeController : Controller
     private readonly AmazonS3Client _s3Client;
     private readonly IConfiguration _config;
     private readonly HtmlWeb _webParser;
-
-    private readonly db _db;
+    private readonly Database database;
 
     string s3Url = "https://491292639630-us-east-1-urlparser.s3.amazonaws.com";
     string bucketName = "491292639630-us-east-1-urlparser";
 
-    public HomeController(ILogger<HomeController> logger, IHttpClientFactory http, IConfiguration config, db database)
+    public HomeController(ILogger<HomeController> logger, IHttpClientFactory http, IConfiguration config)
     {
         _config = config;
         _logger = logger;
         _httpClient = http.CreateClient();
         _s3Client = new AmazonS3Client(new BasicAWSCredentials(_config["aws_access_key"], _config["aws_secret_key"]), Amazon.RegionEndpoint.USEast1);
         _webParser = new HtmlWeb();
-        _db = database;
+        database = new Database(config);
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var numberOfSitesParsed = _db.ScrapeDetails.Count();
+        var numberOfSitesParsed = await database.GetAllRows();
         ViewData["num_of_sites_parsed"] = numberOfSitesParsed;
 
         return View();
@@ -97,7 +95,7 @@ public class HomeController : Controller
             var t = HTMLDoc.DocumentNode.SelectNodes($"//{x}");
             if (t != null)
             {
-                var info = GenerateTagInfo(t, x, validUrl.Host);
+                var info = Functions.GenerateTagInfo(t, x, validUrl.Host);
                 tagsInfo.Add(info);
             }
         }
@@ -134,11 +132,10 @@ public class HomeController : Controller
             }
         };
         await _s3Client.PutObjectAsync(downloadableFilenameRequest);
-        var viewData = new ScrapeDetails(validUrl, timer.ElapsedMilliseconds, $"{s3Url}/{viewableFilename}", $"{s3Url}/{downloadableFilename}", jsonFile);
+        var viewData = new ScrapeDetails(validUrl, timer.ElapsedMilliseconds, $"{s3Url}/{viewableFilename}", $"{s3Url}/{downloadableFilename}");
 
         // save url parse info to db
-        await _db.ScrapeDetails.AddAsync(viewData);
-        await _db.SaveChangesAsync();
+        await database.InsertNewRecord(validUrl, validUrl.AbsoluteUri, DateTime.UtcNow, timer.ElapsedMilliseconds, $"{s3Url}/{viewableFilename}", $"{s3Url}/{downloadableFilename}");
 
         ViewData["tags_parsed"] = tags_to_parse.ToArray();
 
