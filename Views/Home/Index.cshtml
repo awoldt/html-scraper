@@ -1,48 +1,55 @@
 ﻿@using System.Linq
+@using System.Text.Json
 
 @{
     ViewData["Title"] = "Home Page";
     var numberOfSitesParsed = ViewData["num_of_sites_parsed"];
     var tagsParsed = ViewData["tags_parsed"] as IEnumerable<string>;
+
+    ScrapeDetails? scrapeResults = null;
+    if (TempData["parse_results"] != null)
+    {
+        scrapeResults = JsonSerializer.Deserialize<ScrapeDetails>((string)TempData["parse_results"]);
+    }
 }
 
 @model ScrapeDetails
 
 <div>
     @* SUCCESSFULY URL PARSE *@
-    @if (Model != null)
+    @if (scrapeResults != null)
     {
         <div class="alert-success">URL Successfully Parsed!</div>
 
-        if (Model.TimeToComplete < 1000)
+        if (scrapeResults.TimeToComplete < 1000)
         {
-            <p>Website was parsed in @Model.TimeToComplete ms</p>
+            <p>Website was parsed in @scrapeResults.TimeToComplete ms</p>
         }
         else
         {
-            <p>Website was parsed in @(Model.TimeToComplete / 1000) seconds</p>
+            <p>Website was parsed in @(scrapeResults.TimeToComplete / 1000) seconds</p>
         }
 
-        <p><b>URL</b>: @Model.Url</p>
-        <p><b>Host</b>: @Model.Host</p>
-        <p><b>Parsed on</b>: @Model.ScrapedOn</p>
+        <p><b>URL</b>: @scrapeResults.Url</p>
+        <p><b>Host</b>: @scrapeResults.Host</p>
+        <p><b>Parsed on</b>: @scrapeResults.ScrapedOn</p>
         @if (tagsParsed != null)
         {
             <p><b>Tags parsed</b>: @string.Join(", ", tagsParsed.Select(t => t.ToString()))</p>
         }
 
 
-        <div>
-            <div>
-                <a href="@Model.S3FileUrlViewable" target="_blank">View JSON file</a>
+        <div id="json_btns_container">
+            <div class="json-btn" style="background-color: red;">
+                <a href="@scrapeResults.S3FileUrlViewable" target="_blank">View JSON file</a>
             </div>
 
-            <div>
-                <a href="@Model.S3FileUrlDownloadable">Download JSON file</a>
+            <div class="json-btn" style="background-color: blue;">
+                <a href="@scrapeResults.S3FileUrlDownloadable">Download JSON file</a>
             </div>
-
-            <a href="/" style="margin-top: 50px; display: block">Return home</a>
         </div>
+
+        <a href="/" style="margin-top: 50px; display: block">Return home</a>
 
         <hr style="margin-top: 50px;" />
         <p>Parse another URL</p>
@@ -84,7 +91,8 @@
             developers to build more feature-rich web scraping/parsing tools with the IDs and classes of certain tags being
             clearly shown.</p>
 
-        <p>All pages parsed will return a downloadable JSON file containing information such as the number of tags, the inner text of these tags, classes and ID attributes, and more.</p>
+        <p>All pages parsed will return a downloadable JSON file containing information such as the number of tags, the
+            inner text of these tags, classes and ID attributes, and more.</p>
 
 
         <partial name="_JsonExample" />

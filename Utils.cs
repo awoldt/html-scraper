@@ -109,22 +109,32 @@ namespace Utils
                 switch (tagName)
                 {
                     case "img":
-                        tagDetails.Add(new ImgTag
+                        var src = GetSource(x.GetAttributeValue("src", null), host);
+                        if (src != null)
                         {
-                            ClassName = x.GetAttributeValue("class", null),
-                            IdName = x.GetAttributeValue("id", null),
-                            Src = GetSource(x.GetAttributeValue("src", null), host),
-                            Alt = x.GetAttributeValue("alt", null),
-                        });
+                            tagDetails.Add(new ImgTag
+                            {
+                                ClassName = x.GetAttributeValue("class", null),
+                                IdName = x.GetAttributeValue("id", null),
+                                Src = src,
+                                Alt = x.GetAttributeValue("alt", null),
+                            });
+                        }
+
                         break;
 
                     case "a":
-                        tagDetails.Add(new ATag
+                        var href = GetSource(x.GetAttributeValue("href", null), host);
+                        if (href != null)
                         {
-                            ClassName = x.GetAttributeValue("class", null),
-                            IdName = x.GetAttributeValue("id", null),
-                            Href = GetSource(x.GetAttributeValue("href", null), host)
-                        });
+                            tagDetails.Add(new ATag
+                            {
+                                ClassName = x.GetAttributeValue("class", null),
+                                IdName = x.GetAttributeValue("id", null),
+                                Href = href
+                            });
+                        }
+
                         break;
 
                     case "script":
@@ -148,12 +158,15 @@ namespace Utils
                         break;
 
                     case "meta":
-                        tagDetails.Add(new MetaTag
+                        if (x.GetAttributeValue("name", null) != null || x.GetAttributeValue("property", null) != null || x.GetAttributeValue("content", null) != null)
                         {
-                            Name = x.GetAttributeValue("name", null),
-                            Property = x.GetAttributeValue("property", null),
-                            Content = x.GetAttributeValue("content", null),
-                        });
+                            tagDetails.Add(new MetaTag
+                            {
+                                Name = x.GetAttributeValue("name", null),
+                                Property = x.GetAttributeValue("property", null),
+                                Content = x.GetAttributeValue("content", null),
+                            });
+                        }
                         break;
 
                     case "input":
@@ -217,9 +230,10 @@ namespace Utils
             if (path == null) return null;
 
             Uri? url;
-            Uri.TryCreate(path, UriKind.Absolute, out url);
-            // RELATIVE PATH, APPEND SITES HOST
-            if (url == null)
+            if (!Uri.TryCreate(path, UriKind.Absolute, out url)) return null;
+
+            // make sure an HTTPS scheme is returned
+            if (url.Scheme != "http" && url.Scheme != "https")
             {
                 return $"https://{host}{path}";
             }

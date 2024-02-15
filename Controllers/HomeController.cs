@@ -138,8 +138,9 @@ public class HomeController : Controller
         await database.InsertNewRecord(validUrl, validUrl.AbsoluteUri, DateTime.UtcNow, timer.ElapsedMilliseconds, $"{s3Url}/{viewableFilename}", $"{s3Url}/{downloadableFilename}");
 
         ViewData["tags_parsed"] = tags_to_parse.ToArray();
+        TempData["parse_results"] = JsonSerializer.Serialize<ScrapeDetails>(viewData);
 
-        return View(viewData);
+        return Redirect("/");
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

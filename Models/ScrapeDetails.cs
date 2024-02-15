@@ -1,11 +1,10 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics;
-
 using Utils;
 
 public class ScrapeDetails
 {
+    // Parameterless constructor for json deserialization
+    public ScrapeDetails() { }
+
     public ScrapeDetails(Uri url, long timeToParseUrl, string s3ViewableUrl, string s3DownloadbleUrl)
     {
         Url = url.ToString().Trim();
@@ -15,8 +14,6 @@ public class ScrapeDetails
         S3FileUrlViewable = s3ViewableUrl;
         S3FileUrlDownloadable = s3DownloadbleUrl;
     }
-
-    public int Id { get; set; }
 
     public string Host { get; set; }
 

@@ -2,9 +2,6 @@
   html {
     font-size: 16px;
   }
-}
-
-@media (min-width: 768px) {
   .container {
     max-width: 720px;
   }
@@ -18,7 +15,7 @@
 
 @media (min-width: 1200px) {
   .container {
-    max-width: 1140px;
+    max-width: 1250px;
   }
 }
 
@@ -71,4 +68,21 @@ html {
 
 .tag-checkbox-div {
   display: inline-block;
+}
+
+#json_btns_container {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 50px;
+  font-weight: 900;
+}
+
+.json-btn {
+  padding: 15px;
+  border-radius: 30px;
+}
+
+.json-btn a {
+  color: white;
+  text-decoration: none;
 }

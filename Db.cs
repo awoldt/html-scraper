@@ -24,6 +24,8 @@ public class Database
         /* 
             When a new url is parsed, insert the details 
             into the database
+
+            Since ID is primary key, don't need to specifiy here
          */
 
         using var conn = await ConnectToDatabase();
