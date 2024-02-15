@@ -86,3 +86,16 @@ html {
   color: white;
   text-decoration: none;
 }
+
+#checkboxs_div {
+  max-width: 600px;
+  margin: auto;
+  margin-top: 70px;
+}
+
+#url_input {
+  height: 30px;
+  border-radius: 20px;
+  width: 50%;
+  padding-left: 10px;
+}

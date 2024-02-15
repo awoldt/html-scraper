@@ -47,6 +47,8 @@ namespace Utils
     {
         [JsonPropertyName("href")]
         public string? Href { get; set; }
+        [JsonPropertyName("title")]
+        public string? Title { get; set; }
     }
 
     public class ImgTag : BaseTag
@@ -73,6 +75,10 @@ namespace Utils
         public string? Method { get; set; }
         [JsonPropertyName("action")]
         public string? Action { get; set; }
+        [JsonPropertyName("name")]
+        public string? Name { get; set; }
+        [JsonPropertyName("onsubmit")]
+        public string? OnSubmit { get; set; }
     }
 
     public class MetaTag : BaseTag
@@ -105,7 +111,8 @@ namespace Utils
             List<BaseTag> tagDetails = new List<BaseTag>();
             foreach (var x in tags)
             {
-                Uri? validUrl;
+                var className = x.GetAttributeValue("class", null);
+                var idName = x.GetAttributeValue("id", null);
                 switch (tagName)
                 {
                     case "img":
@@ -114,8 +121,8 @@ namespace Utils
                         {
                             tagDetails.Add(new ImgTag
                             {
-                                ClassName = x.GetAttributeValue("class", null),
-                                IdName = x.GetAttributeValue("id", null),
+                                ClassName = className,
+                                IdName = idName,
                                 Src = src,
                                 Alt = x.GetAttributeValue("alt", null),
                             });
@@ -125,13 +132,15 @@ namespace Utils
 
                     case "a":
                         var href = GetSource(x.GetAttributeValue("href", null), host);
+                        var title = GetSource(x.GetAttributeValue("title", null), host);
                         if (href != null)
                         {
                             tagDetails.Add(new ATag
                             {
-                                ClassName = x.GetAttributeValue("class", null),
-                                IdName = x.GetAttributeValue("id", null),
-                                Href = href
+                                ClassName = className,
+                                IdName = idName,
+                                Href = href,
+                                Title = title
                             });
                         }
 
@@ -140,8 +149,8 @@ namespace Utils
                     case "script":
                         tagDetails.Add(new ScriptTag
                         {
-                            ClassName = x.GetAttributeValue("class", null),
-                            IdName = x.GetAttributeValue("id", null),
+                            ClassName = className,
+                            IdName = idName,
                             Src = GetSource(x.GetAttributeValue("src", null), host),
                             InlineScript = x.GetAttributeValue("src", null) == null ? true : false,
                             InlineScriptText = x.GetAttributeValue("src", null) == null ? x.InnerText.Replace("\n", "").Replace("\r", "").Replace("\t", "") : null
@@ -150,42 +159,57 @@ namespace Utils
                         break;
 
                     case "form":
+                        var method = x.GetAttributeValue("method", null);
+                        var action = GetSource(x.GetAttributeValue("action", null), host);
+                        var formName = x.GetAttributeValue("name", null);
+                        var onsubmit = x.GetAttributeValue("onsubmit", null);
                         tagDetails.Add(new FormTag
                         {
-                            Method = x.GetAttributeValue("method", null),
-                            Action = GetSource(x.GetAttributeValue("action", null), host)
+                            Method = method,
+                            Action = action,
+                            Name = formName,
+                            OnSubmit = onsubmit
                         });
                         break;
 
                     case "meta":
-                        if (x.GetAttributeValue("name", null) != null || x.GetAttributeValue("property", null) != null || x.GetAttributeValue("content", null) != null)
+                        var metaName = x.GetAttributeValue("name", null);
+                        var property = x.GetAttributeValue("property", null);
+                        var content = x.GetAttributeValue("content", null);
+                        if (metaName != null || property != null || content != null)
                         {
                             tagDetails.Add(new MetaTag
                             {
-                                Name = x.GetAttributeValue("name", null),
-                                Property = x.GetAttributeValue("property", null),
-                                Content = x.GetAttributeValue("content", null),
+                                Name = metaName,
+                                Property = property,
+                                Content = content
                             });
                         }
                         break;
 
                     case "input":
-                        tagDetails.Add(new InputTag
+                        var type = x.GetAttributeValue("type", null);
+                        var name = x.GetAttributeValue("name", null);
+                        if (type != null || name != null)
                         {
-                            Type = x.GetAttributeValue("type", null),
-                            Name = x.GetAttributeValue("name", null),
-                        });
+                            tagDetails.Add(new InputTag
+                            {
+                                Type = type,
+                                Name = name,
+                            });
+                        }
                         break;
 
                     // other text based tags such as p, h, span, etc.....
                     default:
-                        if (Regex.Replace(x.InnerText.Replace("\n", "").Replace("\r", "").Replace("\t", "").Trim(), "\\s+", " ") != "")
+                        var innerText = Regex.Replace(x.InnerText.Replace("\n", "").Replace("\r", "").Replace("\t", "").Trim(), "\\s+", " ");
+                        if (innerText != "")
                         {
                             tagDetails.Add(new TextTag
                             {
-                                ClassName = x.GetAttributeValue("class", null),
-                                IdName = x.GetAttributeValue("id", null),
-                                InnerText = Regex.Replace(x.InnerText.Replace("\n", "").Replace("\r", "").Replace("\t", "").Trim(), "\\s+", " ")
+                                ClassName = className,
+                                IdName = idName,
+                                InnerText = innerText
                             });
                         }
                         break;
@@ -195,7 +219,7 @@ namespace Utils
             return new TagInfo
             {
                 Tag = tagName,
-                Number = tags.Count,
+                Number = tagDetails.Count,
                 Values = tagDetails.ToArray()
             };
         }

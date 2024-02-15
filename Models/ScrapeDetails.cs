@@ -5,7 +5,7 @@ public class ScrapeDetails
     // Parameterless constructor for json deserialization
     public ScrapeDetails() { }
 
-    public ScrapeDetails(Uri url, long timeToParseUrl, string s3ViewableUrl, string s3DownloadbleUrl)
+    public ScrapeDetails(string id, Uri url, long timeToParseUrl, string s3ViewableUrl, string s3DownloadbleUrl)
     {
         Url = url.ToString().Trim();
         Host = Functions.RemoveSubdomains(url);
@@ -13,7 +13,10 @@ public class ScrapeDetails
         TimeToComplete = timeToParseUrl;
         S3FileUrlViewable = s3ViewableUrl;
         S3FileUrlDownloadable = s3DownloadbleUrl;
+        Id = id;
     }
+
+    public string Id { get; set; }
 
     public string Host { get; set; }
 

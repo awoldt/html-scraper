@@ -20,19 +20,12 @@
     @if (scrapeResults != null)
     {
         <div class="alert-success">URL Successfully Parsed!</div>
-
-        if (scrapeResults.TimeToComplete < 1000)
-        {
-            <p>Website was parsed in @scrapeResults.TimeToComplete ms</p>
-        }
-        else
-        {
-            <p>Website was parsed in @(scrapeResults.TimeToComplete / 1000) seconds</p>
-        }
-
+        <p><b>ID</b>: @scrapeResults.Id</p>
         <p><b>URL</b>: @scrapeResults.Url</p>
         <p><b>Host</b>: @scrapeResults.Host</p>
-        <p><b>Parsed on</b>: @scrapeResults.ScrapedOn</p>
+        <p><b>Parsed on</b>: @scrapeResults.ScrapedOn UTC</p>
+        <p><b>Time to parse</b>: @scrapeResults.TimeToComplete ms</p>
+
         @if (tagsParsed != null)
         {
             <p><b>Tags parsed</b>: @string.Join(", ", tagsParsed.Select(t => t.ToString()))</p>
@@ -71,8 +64,8 @@
 
         <div id="top_info_div">
             <div style="margin-bottom: 40px;">
-                <h1 style="margin-bottom: 0px;">URL Parser</h1>
-                <p>Extract HTML tag information from any website and download JSON data showcasing attributes such as href,
+                <h1 style="margin-bottom: 0px;">HTML Tag Scraper</h1>
+                <p>Extract HTML tag information from any website showcasing attributes such as href,
                     inner text, class, src, and more</p>
                 @if (numberOfSitesParsed != null)
                 {
@@ -87,7 +80,8 @@
 
         <hr>
 
-        <p>Use our free online tool to parse URLs and extract HTML tag information. This data can then be used for
+        <p>Use our free online tool to scrape websites and extract basic HTML tag information. This data can then be used
+            for
             developers to build more feature-rich web scraping/parsing tools with the IDs and classes of certain tags being
             clearly shown.</p>
 

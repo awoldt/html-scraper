@@ -8,6 +8,7 @@ using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
 using webscraper.Models;
 using Utils;
+using db;
 
 namespace webscraper.Controllers;
 
@@ -35,8 +36,26 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var numberOfSitesParsed = await database.GetAllRows();
-        ViewData["num_of_sites_parsed"] = numberOfSitesParsed;
+        string? reportID = Request.Query["report"];
+
+        Console.WriteLine(reportID);
+        if (reportID == null)
+        {
+            var numberOfSitesParsed = await database.GetAllRows();
+            ViewData["num_of_sites_parsed"] = numberOfSitesParsed;
+
+            return View();
+        }
+
+        var data = await database.GetReport(reportID);
+        if (data == null)
+        {
+            HttpContext.Response.StatusCode = 404;
+            ErrorViewModel viewModel = new ErrorViewModel($"There is no report with id {reportID}");
+            return View("Error", viewModel);
+        }
+
+        TempData["parse_results"] = JsonSerializer.Serialize(data);
 
         return View();
     }
@@ -48,6 +67,14 @@ public class HomeController : Controller
         {
             HttpContext.Response.StatusCode = 500;
             ErrorViewModel viewModel = new ErrorViewModel("There was an error while processing form data");
+            return View("Error", viewModel);
+        }
+
+        // make sure there is at least 1 checkbox tag selected
+        if (tags_to_parse.Count == 0)
+        {
+            HttpContext.Response.StatusCode = 400;
+            ErrorViewModel viewModel = new ErrorViewModel("Must select at least one tag checkbox");
             return View("Error", viewModel);
         }
 
@@ -132,15 +159,17 @@ public class HomeController : Controller
             }
         };
         await _s3Client.PutObjectAsync(downloadableFilenameRequest);
-        var viewData = new ScrapeDetails(validUrl, timer.ElapsedMilliseconds, $"{s3Url}/{viewableFilename}", $"{s3Url}/{downloadableFilename}");
+        var id = Guid.NewGuid().ToString();
+        var viewData = new ScrapeDetails(id, validUrl, timer.ElapsedMilliseconds, $"{s3Url}/{viewableFilename}", $"{s3Url}/{downloadableFilename}");
 
         // save url parse info to db
-        await database.InsertNewRecord(validUrl, validUrl.AbsoluteUri, DateTime.UtcNow, timer.ElapsedMilliseconds, $"{s3Url}/{viewableFilename}", $"{s3Url}/{downloadableFilename}");
+
+        await database.InsertNewRecord(id, validUrl, validUrl.AbsoluteUri, DateTime.UtcNow, timer.ElapsedMilliseconds, $"{s3Url}/{viewableFilename}", $"{s3Url}/{downloadableFilename}");
 
         ViewData["tags_parsed"] = tags_to_parse.ToArray();
         TempData["parse_results"] = JsonSerializer.Serialize<ScrapeDetails>(viewData);
 
-        return Redirect("/");
+        return Redirect($"/?report={id}");
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
