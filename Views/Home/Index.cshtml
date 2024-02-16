@@ -43,12 +43,6 @@
         </div>
 
         <a href="/" style="margin-top: 50px; display: block">Return home</a>
-
-        <hr style="margin-top: 50px;" />
-        <p>Parse another URL</p>
-        <partial name="_TagsForm" />
-
-
     }
     @* default homepage *@
     else
@@ -69,17 +63,15 @@
                     inner text, class, src, and more</p>
                 @if (numberOfSitesParsed != null)
                 {
-                    <p style="margin-top: 0px; color: red">@numberOfSitesParsed sites have been parsed!</p>
+                    <p style="margin-top: 0px; color: red">@numberOfSitesParsed sites have been scraped!</p>
                 }
             </div>
 
             <partial name="_TagsForm" />
         </div>
-
-
-
+        
         <hr>
-
+        
         <p>Use our free online tool to scrape websites and extract basic HTML tag information. This data can then be used
             for
             developers to build more feature-rich web scraping/parsing tools with the IDs and classes of certain tags being

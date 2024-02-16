@@ -38,7 +38,6 @@ public class HomeController : Controller
     {
         string? reportID = Request.Query["report"];
 
-        Console.WriteLine(reportID);
         if (reportID == null)
         {
             var numberOfSitesParsed = await database.GetAllRows();
