@@ -8,7 +8,7 @@
 
 <div style="margin-top: 50px;">
   <p class="mb0-ptag">
-    The JSON structure returned following the successful parsing of a valid URL will resemble this:</p>
+    The JSON structure returned following the successful scraping of a valid URL will resemble this:</p>
 
   <pre>
         <code class="hljs language-json">{
@@ -19,7 +19,7 @@
     </pre>
 
   <p class="mb0-ptag">The <i>data</i> property will contain all the information related to the specific tags on the HTML
-    page parsed.</p>
+    page scraped.</p>
 
   <pre>
     <code class="hljs language-json">{
@@ -29,9 +29,9 @@
 }</code>
 </pre>
 
-  <p>Here is an example of a successful URL parse: (<a
+  <p>Here is an example of a successful HTML scrape: (<a
       href="https://ogp.me/">ogp.me</a>).<br>Only <i>&lt;p&gt;</i> and
-    <i>&lt;img&gt;</i> tags were selected for this parse.</p>
+    <i>&lt;img&gt;</i> tags were selected.</p>
   <pre>
     <code  class="hljs language-json">{
   "parsed_in_ms": 33,
